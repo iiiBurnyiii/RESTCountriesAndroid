@@ -2,27 +2,46 @@ package com.example.countries.ui.countryList
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.countries.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.countries.databinding.CountryListFragmentBinding
+import com.example.countries.util.ViewModelFactory
+import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.country_list_fragment.*
+import javax.inject.Inject
 
-class CountryListFragment : Fragment() {
+class CountryListFragment : DaggerFragment() {
 
-    private lateinit var viewModel: CountryListViewModel
+    private lateinit var binding: CountryListFragmentBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.country_list_fragment, container, false)
+    @Inject lateinit var countryListAdapter: CountryListAdapter
+    @Inject lateinit var factory: ViewModelFactory
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View {
+
+        binding = CountryListFragmentBinding.inflate(inflater,
+            container, false).apply {
+            viewModel = ViewModelProviders.of(this@CountryListFragment, factory)[CountryListViewModel::class.java]
+            setLifecycleOwner(this@CountryListFragment)
+        }
+
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CountryListViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        initAdapter()
+    }
+
+    private fun initAdapter() {
+        with(rvCountryList) {
+            layoutManager = LinearLayoutManager(this@CountryListFragment.context)
+            adapter = countryListAdapter
+        }
     }
 
     companion object {

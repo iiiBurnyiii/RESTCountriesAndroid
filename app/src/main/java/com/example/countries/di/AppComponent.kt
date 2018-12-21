@@ -1,9 +1,8 @@
 package com.example.countries.di
 
-import com.example.countries.CountriesApplication
+import com.example.countries.CountryListApplication
+import com.example.countries.di.data.ApiModule
 import com.example.countries.di.data.RoomModule
-import com.example.countries.di.ui.ViewInjectorModule
-import com.example.countries.di.ui.ViewModelModule
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
@@ -14,12 +13,13 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     AppModule::class,
     RoomModule::class,
+    ApiModule::class,
     ViewInjectorModule::class,
-    ViewModelModule::class
+    ViewModelFactoryModule::class
 ])
-interface AppComponent : AndroidInjector<CountriesApplication> {
+interface AppComponent : AndroidInjector<CountryListApplication> {
 
     @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<CountriesApplication>()
+    abstract class Builder : AndroidInjector.Builder<CountryListApplication>()
 
 }

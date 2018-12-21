@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+                name="country"
+                type="com.example.countries.model.Country" />
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvCountryItem"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_margin="4dp"
+            app:cardElevation="2dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+            <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/ivCountryFlag"
+                    app:imgPlaceholder="@{@drawable/ic_image_24dp}"
+                    app:imgError="@{@drawable/ic_broken_image_24dp}"
+                    app:imgUrl="@{country.countryNameAndFlag.flag}"/>
+
+            <TextView
+                    android:id="@+id/tvCountyName"
+                    android:text="@{country.countryNameAndFlag.name}"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</layout>

@@ -11,17 +11,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CountriesApi {
+interface CountryListApi {
 
-    @GET("all")
+    @GET("all?fields=name;flag;currencies;languages;timezones;alpha3Code")
     fun getCountryList(
         @Query("fields") vararg fields: String
-    ): Single<List<Country>>
+    ): Single<List<CountryResponse>?>
 
     companion object {
         private const val BASE_URL = "https://restcountries.eu/rest/v2/"
 
-        fun create(): CountriesApi {
+        fun create(): CountryListApi {
             val logger =
                 HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
                     Log.d("ApiLogger", it)
@@ -39,7 +39,7 @@ interface CountriesApi {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(CountriesApi::class.java)
+                .create(CountryListApi::class.java)
         }
 
     }

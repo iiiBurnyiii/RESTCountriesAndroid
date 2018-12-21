@@ -1,7 +1,26 @@
 package com.example.countries.ui.countryList
 
+import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
+import com.example.countries.data.CountryListRepository
+import com.example.countries.util.LoadState
+import javax.inject.Inject
 
-class CountryListViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class CountryListViewModel @Inject constructor(
+    val repository: CountryListRepository
+) : ViewModel() {
+
+    val countryPagedList = repository.getCountryPagedList(10)
+
+    private val loadState = repository.loadState
+    val isRefreshing = map(loadState) { it == LoadState.LOADING }!!
+
+    fun refresh() {
+        repository.loadCountries(true)
+    }
+
+    override fun onCleared() {
+        repository.clear()
+    }
+
 }

@@ -2,47 +2,7 @@ package com.example.countries.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-
-@Entity(
-    primaryKeys = ["country_alpha_code",
-        "language_id",
-        "timezone_id",
-        "currency_id"],
-    foreignKeys = [
-        ForeignKey(
-            entity = CountryNameAndFlag::class,
-            parentColumns = ["alpha_code"],
-            childColumns = ["country_alpha_code"]
-        ),
-        ForeignKey(
-            entity = Language::class,
-            parentColumns = ["id"],
-            childColumns = ["language_id"]
-        ),
-        ForeignKey(
-            entity = Timezone::class,
-            parentColumns = ["id"],
-            childColumns = ["timezone_id"]
-        ),
-        ForeignKey(
-            entity = Currency::class,
-            parentColumns = ["id"],
-            childColumns = ["currency_id"]
-        )
-    ]
-)
-data class CountryFiledsJoin(
-    @ColumnInfo(name = "country_alpha_code")
-    val countryAlphaCode: String,
-    @ColumnInfo(name = "language_id")
-    val languageId: Int,
-    @ColumnInfo(name = "timezone_id")
-    val timezoneId: Int,
-    @ColumnInfo(name = "currency_id")
-    val currencyId: Int
-)
 
 @Entity(tableName = "countries")
 data class CountryNameAndFlag(
@@ -56,26 +16,30 @@ data class CountryNameAndFlag(
 
 @Entity
 data class Language(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    @PrimaryKey
+    val iso639: String,
     val name: String,
-    val nativeName: String
+    val nativeName: String,
+    @ColumnInfo(name = "country_alpha_code")
+    val alphaCode: String
 )
 
 
 @Entity
 data class Timezone(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val timezone: String
+    @PrimaryKey
+    val timezone: String,
+    @ColumnInfo(name = "country_alpha_code")
+    val alphaCode: String
 )
 
 
 @Entity
 data class Currency(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    @PrimaryKey
     val code: String,
     val name: String,
-    val symbol: Char
+    val symbol: String,
+    @ColumnInfo(name = "country_alpha_code")
+    val alphaCode: String
 )
