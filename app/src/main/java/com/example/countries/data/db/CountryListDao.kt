@@ -36,16 +36,16 @@ abstract class CountryListDao {
     @Query("SELECT * FROM countries WHERE alpha_code = :countryAlphaCode")
     abstract fun getCountry(countryAlphaCode: String): Single<Country>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(country: CountryNameAndFlag)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(currency: Currency)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(timezone: Timezone)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(language: Language)
 
 }

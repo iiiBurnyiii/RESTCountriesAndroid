@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.countries.data.CountryListRepository
 import com.example.countries.util.LoadState
 import javax.inject.Inject
+import com.example.countries.util.SingleLiveEvent
 
 class CountryListViewModel @Inject constructor(
     val repository: CountryListRepository
@@ -14,6 +15,8 @@ class CountryListViewModel @Inject constructor(
 
     private val loadState = repository.loadState
     val isRefreshing = map(loadState) { it == LoadState.LOADING }!!
+
+    internal val countryClickEvent = SingleLiveEvent<String>()
 
     fun refresh() {
         repository.loadCountries(true)

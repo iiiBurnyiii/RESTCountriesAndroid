@@ -1,7 +1,6 @@
 package com.example.countries.data.api
 
 import android.util.Log
-import com.example.countries.model.Country
 import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

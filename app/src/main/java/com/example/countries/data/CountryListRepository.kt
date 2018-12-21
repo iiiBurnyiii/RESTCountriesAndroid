@@ -11,6 +11,7 @@ import com.example.countries.data.db.CountryListDatabase
 import com.example.countries.model.Country
 import com.example.countries.util.LoadState
 import com.example.countries.util.toDbFriendly
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
@@ -57,12 +58,15 @@ class CountryListRepository @Inject constructor(
                     insertCountriesToDb(countryList, needRefresh)
                 },
                 { e ->
-                    loadState.postValue(LoadState.ERROR)
+                    loadState.postValue(LoadState.error("Please check your internet connection."))
 
                     Log.d(LOG_TAG, "Unable to load remote data: $e")
                 }
             )
     }
+
+    fun getCountryByAlphaCode(alphaCode: String): Single<Country> =
+        db.countryListDao().getCountry(alphaCode)
 
     fun clear() {
         if (!compositeDisposable.isDisposed) {
@@ -74,12 +78,12 @@ class CountryListRepository @Inject constructor(
         countryList?.let {
             loadState.postValue(LoadState.LOADING)
 
-            compositeDisposable += db.countryListDao().insertCountryList(countryList, needRefresh)
+            db.countryListDao().insertCountryList(countryList, needRefresh)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     { loadState.postValue(LoadState.LOADED) },
                     { e ->
-                        loadState.postValue(LoadState.ERROR)
+                        loadState.postValue(LoadState.error("Unable to insert data to database."))
 
                         Log.d(LOG_TAG, "Unable to insert data to database: $e")
                     }
@@ -88,9 +92,7 @@ class CountryListRepository @Inject constructor(
     }
 
     companion object {
-
         private const val LOG_TAG = "RepositoryLogger"
-
     }
 
 }

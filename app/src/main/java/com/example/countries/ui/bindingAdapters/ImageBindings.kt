@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.caverock.androidsvg.SVGImageView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.countries.util.svgSupport.GlideApp
 import com.example.countries.util.svgSupport.SvgSoftwareLayerSetter
 
@@ -20,6 +20,7 @@ object ImageBindings {
             .error(error)
             .listener(SvgSoftwareLayerSetter())
             .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.DATA)
             .load(url)
             .into(this)
     }
