@@ -1,8 +1,6 @@
 package com.example.countries.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(tableName = "countries")
 data class CountryNameAndFlag(
@@ -14,7 +12,16 @@ data class CountryNameAndFlag(
 )
 
 
-@Entity
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = CountryNameAndFlag::class,
+            parentColumns = ["alpha_code"],
+            childColumns = ["country_alpha_code"]
+        )
+    ],
+    indices = [Index(value = ["country_alpha_code"])]
+)
 data class Language(
     @PrimaryKey
     val iso639: String,
@@ -30,7 +37,16 @@ data class Language(
 }
 
 
-@Entity
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = CountryNameAndFlag::class,
+            parentColumns = ["alpha_code"],
+            childColumns = ["country_alpha_code"]
+        )
+    ],
+    indices = [Index(value = ["country_alpha_code"])]
+)
 data class Timezone(
     @PrimaryKey
     val timezone: String,
@@ -42,7 +58,16 @@ data class Timezone(
 }
 
 
-@Entity
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = CountryNameAndFlag::class,
+            parentColumns = ["alpha_code"],
+            childColumns = ["country_alpha_code"]
+        )
+    ],
+    indices = [Index(value = ["country_alpha_code"])]
+)
 data class Currency(
     @PrimaryKey
     val code: String,

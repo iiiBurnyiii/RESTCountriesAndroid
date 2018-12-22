@@ -1,6 +1,5 @@
 package com.example.countries.ui.country
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +12,9 @@ class CommonAdapter : RecyclerView.Adapter<CommonAdapter.CommonViewHolder>() {
 
     fun setItems(list: List<ICommonItem>) {
         items = list.map {
-            Log.d("CommonAdapterLogger", "item: $it")
             it.toCommonItem()
         }
-//        Log.d("CommonAdapterLogger", "items: $items")
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder {
@@ -25,11 +23,12 @@ class CommonAdapter : RecyclerView.Adapter<CommonAdapter.CommonViewHolder>() {
         return CommonViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CommonViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
         holder.bind(items[position])
+    }
 
-    override fun getItemCount(): Int =
-        items.size
+
+    override fun getItemCount(): Int = items.size
 
 
     inner class CommonViewHolder(
@@ -39,7 +38,6 @@ class CommonAdapter : RecyclerView.Adapter<CommonAdapter.CommonViewHolder>() {
         fun bind(commonItem: CommonItem) {
             with(binding) {
                 item = commonItem
-                Log.d("CommonAdapterLogger", "commonItem: $commonItem")
                 executePendingBindings()
             }
         }

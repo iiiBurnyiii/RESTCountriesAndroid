@@ -41,6 +41,19 @@ class CountryFragment : DaggerFragment() {
             rvTimezones
         )
 
+//        rvLanguages.apply {
+//            layoutManager = LinearLayoutManager(context)
+//            adapter = CommonAdapter()
+//        }
+//        rvCurrencies.apply {
+//            layoutManager = LinearLayoutManager(context)
+//            adapter = CommonAdapter()
+//        }
+//        rvTimezones.apply {
+//            layoutManager = LinearLayoutManager(context)
+//            adapter = CommonAdapter()
+//        }
+
         binding.viewModel?.apply {
             loadCountry(countryAlphaCode)
         }

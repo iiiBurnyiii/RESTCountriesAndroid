@@ -26,9 +26,9 @@ class CountryViewModel @Inject constructor(
     val timezones = map(countryLiveData) { it.timezones }!!
     val languages = map(countryLiveData) { it.languages }!!
 
-
     fun loadCountry(alphaCode: String) {
         loadState.postValue(LoadState.LOADING)
+
         compositeDisposable += repository.getCountryByAlphaCode(alphaCode)
             .subscribeOn(Schedulers.io())
             .subscribe(
