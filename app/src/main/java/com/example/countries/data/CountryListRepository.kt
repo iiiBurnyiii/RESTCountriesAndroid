@@ -20,9 +20,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class CountryListRepository @Inject constructor(
     val db: CountryListDatabase,
     val api: CountryListApi
