@@ -11,7 +11,7 @@ class CountryListViewModel @Inject constructor(
     val repository: CountryListRepository
 ) : ViewModel() {
 
-    val countryPagedList = repository.getCountryPagedList(10)
+    val countryPagedList = repository.getCountries(10)
 
     val loadState = repository.listLoadState
     val isRefreshing = map(loadState) { it == LoadState.LOADING }!!

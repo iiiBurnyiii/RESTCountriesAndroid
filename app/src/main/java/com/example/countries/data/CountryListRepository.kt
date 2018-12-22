@@ -3,6 +3,7 @@ package com.example.countries.data
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
 import androidx.paging.Config
 import androidx.paging.PagedList
@@ -24,16 +25,17 @@ import javax.inject.Inject
 class CountryListRepository @Inject constructor(
     val db: CountryListDatabase,
     val api: CountryListApi
-) {
+): IRepository {
 
     private val countryListDisposable = CompositeDisposable()
     val listLoadState = SingleLiveEvent<LoadState>()
 
     private val countryDisposable = CompositeDisposable()
-    val countryLiveData = MutableLiveData<Country>()
+    private val _countryLiveData = MutableLiveData<Country>()
     val countryLoadState = SingleLiveEvent<LoadState>()
+    val countryLiveData = map(_countryLiveData) { it }!!
 
-    fun loadCountries(needRefresh: Boolean) {
+    override fun loadCountries(needRefresh: Boolean) {
         listLoadState.postValue(LoadState.LOADING)
 
         countryListDisposable += api.getCountryList()
@@ -53,7 +55,7 @@ class CountryListRepository @Inject constructor(
             )
     }
 
-    fun getCountryPagedList(listPageSize: Int): LiveData<PagedList<Country>> {
+    override fun getCountries(listPageSize: Int): LiveData<PagedList<Country>> {
         val boundaryCallback = CountryListBoundaryCallback(
             loadData = this::loadCountries
         )
@@ -69,12 +71,12 @@ class CountryListRepository @Inject constructor(
         )
     }
 
-    fun getCountry(alphaCode: String) {
+    override fun getCountry(alphaCode: String) {
         countryDisposable += db.countryListDao().getCountry(alphaCode)
             .subscribeOn(Schedulers.io())
             .subscribe(
                 { country ->
-                    countryLiveData.postValue(country)
+                    _countryLiveData.postValue(country)
                 },
                 { e ->
                     countryLoadState.postValue(LoadState.ERROR.apply { msg = "Unable to load data from database." })
@@ -84,7 +86,7 @@ class CountryListRepository @Inject constructor(
             )
     }
 
-    fun clear(viewModel: ViewModel) {
+    override fun clear(viewModel: ViewModel) {
         when (viewModel) {
             is CountryListViewModel -> disposeCountryList()
             is CountryViewModel -> disposeCountry()
