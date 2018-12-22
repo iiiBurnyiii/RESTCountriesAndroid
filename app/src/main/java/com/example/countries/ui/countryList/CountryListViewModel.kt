@@ -23,7 +23,7 @@ class CountryListViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        repository.clear()
+        repository.clear(this)
     }
 
 }

@@ -10,6 +10,11 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private val fragmentManager = supportFragmentManager
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
@@ -20,7 +25,7 @@ class MainActivity : DaggerAppCompatActivity() {
             fragmentManager
                 .beginTransaction()
                 .replace(R.id.container, CountryListFragment.newInstance())
-                .commitNow()
+                .commit()
         }
 
         fragmentManager.addOnBackStackChangedListener {
@@ -28,9 +33,9 @@ class MainActivity : DaggerAppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+    override fun onResume() {
+        super.onResume()
+        onBackStackChange()
     }
 
     fun openCountryFragment(alphaCode: String) {
@@ -43,7 +48,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun onBackStackChange() {
         when(fragmentManager.findFragmentById(R.id.container)) {
-            is CountryListFragment, null -> false
+            is CountryListFragment -> false
             else -> true
         }.let { supportActionBar?.setDisplayHomeAsUpEnabled(it) }
     }

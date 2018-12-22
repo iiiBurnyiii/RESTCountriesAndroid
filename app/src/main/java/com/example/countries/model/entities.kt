@@ -9,8 +9,9 @@ data class CountryNameAndFlag(
     val alphaCode: String,
     val name: String,
     val flag: String
-)
-
+) {
+    var alphaCodeWithName = "$alphaCode, $name"
+}
 
 @Entity(
     foreignKeys = [
@@ -20,10 +21,10 @@ data class CountryNameAndFlag(
             childColumns = ["country_alpha_code"]
         )
     ],
-    indices = [Index(value = ["country_alpha_code"])]
+    primaryKeys = ["iso639", "country_alpha_code"],
+    indices = [Index(value = ["country_alpha_code"], unique = false)]
 )
 data class Language(
-    @PrimaryKey
     val iso639: String,
     val name: String,
     val nativeName: String,
@@ -45,10 +46,10 @@ data class Language(
             childColumns = ["country_alpha_code"]
         )
     ],
-    indices = [Index(value = ["country_alpha_code"])]
+    primaryKeys = ["timezone", "country_alpha_code"],
+    indices = [Index(value = ["country_alpha_code"], unique = false)]
 )
 data class Timezone(
-    @PrimaryKey
     val timezone: String,
     @ColumnInfo(name = "country_alpha_code")
     val alphaCode: String
@@ -66,10 +67,10 @@ data class Timezone(
             childColumns = ["country_alpha_code"]
         )
     ],
-    indices = [Index(value = ["country_alpha_code"])]
+    primaryKeys = ["code", "country_alpha_code"],
+    indices = [Index(value = ["country_alpha_code"], unique = false)]
 )
 data class Currency(
-    @PrimaryKey
     val code: String,
     val name: String,
     val symbol: String,

@@ -16,7 +16,6 @@ import javax.inject.Inject
 class CountryFragment : DaggerFragment() {
 
     private lateinit var binding: CountryFragmentBinding
-    private lateinit var countryAlphaCode: String
 
     @Inject lateinit var factory: ViewModelFactory
 
@@ -35,31 +34,18 @@ class CountryFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        initAdapter(
+        initAdapters(
             rvLanguages,
             rvCurrencies,
             rvTimezones
         )
 
-//        rvLanguages.apply {
-//            layoutManager = LinearLayoutManager(context)
-//            adapter = CommonAdapter()
-//        }
-//        rvCurrencies.apply {
-//            layoutManager = LinearLayoutManager(context)
-//            adapter = CommonAdapter()
-//        }
-//        rvTimezones.apply {
-//            layoutManager = LinearLayoutManager(context)
-//            adapter = CommonAdapter()
-//        }
-
         binding.viewModel?.apply {
-            loadCountry(countryAlphaCode)
+            start(arguments?.getString(ARGUMENT_COUNTRY_CODE))
         }
     }
 
-    private fun initAdapter(vararg recyclerViews: RecyclerView) {
+    private fun initAdapters(vararg recyclerViews: RecyclerView) {
         recyclerViews.forEach { it ->
             with(it) {
                 layoutManager = LinearLayoutManager(context)
@@ -70,8 +56,12 @@ class CountryFragment : DaggerFragment() {
 
 
     companion object {
+        const val ARGUMENT_COUNTRY_CODE = "COUNTRY_CODE"
+
         fun newInstance(alphaCode: String): CountryFragment = CountryFragment().apply {
-            countryAlphaCode = alphaCode
+            arguments = Bundle().apply {
+                putString(ARGUMENT_COUNTRY_CODE, alphaCode)
+            }
         }
     }
 
