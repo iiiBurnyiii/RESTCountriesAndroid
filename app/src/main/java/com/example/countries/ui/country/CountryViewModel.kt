@@ -20,7 +20,7 @@ class CountryViewModel @Inject constructor(
 
     fun start(alphaCode: String?) =
         alphaCode?.let {
-            repository.getCountry(alphaCode)
+             repository.getCountry(alphaCode)
         }
 
     override fun onCleared() {
