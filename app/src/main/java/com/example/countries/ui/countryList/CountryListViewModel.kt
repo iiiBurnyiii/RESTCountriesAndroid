@@ -13,10 +13,12 @@ class CountryListViewModel @Inject constructor(
 
     val countryPagedList = repository.getCountryPagedList(10)
 
-    private val loadState = repository.loadState
+    val loadState = repository.loadState
     val isRefreshing = map(loadState) { it == LoadState.LOADING }!!
 
     internal val countryClickEvent = SingleLiveEvent<String>()
+    val snackbarMessage = SingleLiveEvent<String>()
+
 
     fun refresh() {
         repository.loadCountries(true)

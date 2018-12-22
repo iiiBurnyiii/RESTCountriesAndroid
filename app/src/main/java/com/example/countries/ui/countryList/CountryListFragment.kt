@@ -2,17 +2,15 @@ package com.example.countries.ui.countryList
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.countries.R
 import com.example.countries.databinding.CountryListFragmentBinding
 import com.example.countries.ui.MainActivity
-import com.example.countries.ui.country.CountryFragment
 import com.example.countries.util.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.country_list_fragment.*
 import javax.inject.Inject
@@ -44,18 +42,26 @@ class CountryListFragment : DaggerFragment() {
             countryClickEvent.observe(this@CountryListFragment, Observer { alphaCode ->
                 (activity as MainActivity).openCountryFragment(alphaCode)
             })
+
+            observeLoadErrors(this)
         }
     }
 
     private fun initAdapter(viewModel: CountryListViewModel) {
         with(rvCountryList) {
             layoutManager = LinearLayoutManager(this@CountryListFragment.context)
-            adapter = CountryListAdapter(viewModel)
+            adapter = CountryPagedListAdapter(viewModel)
         }
     }
 
-    private fun openCountryFragment(alphaCode: String) {
-
+    private fun observeLoadErrors(viewModel: CountryListViewModel) {
+        var snackbar: Snackbar
+        viewModel.loadState.observe(this, Observer { loadState ->
+            loadState.msg?.let {
+                snackbar = Snackbar.make(binding.root, loadState.msg!!, Snackbar.LENGTH_SHORT)
+                    .apply { show() }
+            }
+        })
     }
 
     companion object {

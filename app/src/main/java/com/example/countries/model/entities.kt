@@ -18,7 +18,8 @@ data class CountryNameAndFlag(
         ForeignKey(
             entity = CountryNameAndFlag::class,
             parentColumns = ["alpha_code"],
-            childColumns = ["country_alpha_code"]
+            childColumns = ["country_alpha_code"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     primaryKeys = ["iso639", "country_alpha_code"],
@@ -43,7 +44,8 @@ data class Language(
         ForeignKey(
             entity = CountryNameAndFlag::class,
             parentColumns = ["alpha_code"],
-            childColumns = ["country_alpha_code"]
+            childColumns = ["country_alpha_code"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     primaryKeys = ["timezone", "country_alpha_code"],
@@ -64,7 +66,8 @@ data class Timezone(
         ForeignKey(
             entity = CountryNameAndFlag::class,
             parentColumns = ["alpha_code"],
-            childColumns = ["country_alpha_code"]
+            childColumns = ["country_alpha_code"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     primaryKeys = ["code", "country_alpha_code"],

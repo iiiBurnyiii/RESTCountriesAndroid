@@ -4,6 +4,7 @@ import androidx.paging.DataSource
 import androidx.room.*
 import com.example.countries.model.*
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 
 @Dao
@@ -26,7 +27,7 @@ abstract class CountryListDao {
 
     @Transaction
     @Query("SELECT * FROM countries")
-    abstract fun getAllCountries(): DataSource.Factory<Int, Country>
+    abstract fun getCountryDataFactory(): DataSource.Factory<Int, Country>
 
     @Transaction
     @Query("DELETE FROM countries")

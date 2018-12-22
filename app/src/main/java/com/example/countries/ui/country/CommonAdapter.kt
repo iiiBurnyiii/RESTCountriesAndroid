@@ -10,7 +10,7 @@ class CommonAdapter : RecyclerView.Adapter<CommonAdapter.CommonViewHolder>() {
 
     private var items: List<CommonItem> = emptyList()
 
-    fun setItems(list: List<ICommonItem>) {
+    fun submitList(list: List<ICommonItem>) {
         items = list.map {
             it.toCommonItem()
         }

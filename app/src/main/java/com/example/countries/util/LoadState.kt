@@ -9,11 +9,11 @@ enum class State {
 @Suppress("DataClassPrivateConstructor")
 data class LoadState private constructor(
     val status: State,
-    val msg: String? = null
+    var msg: String? = null
 ) {
     companion object {
         val LOADED = LoadState(State.SUCCESS)
         val LOADING = LoadState(State.RUNNING)
-        fun error(msg: String?) = LoadState(State.FAILED, msg)
+        val ERROR = LoadState(State.FAILED)
     }
 }

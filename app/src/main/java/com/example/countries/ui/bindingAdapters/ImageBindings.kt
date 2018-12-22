@@ -14,7 +14,7 @@ object ImageBindings {
     @JvmStatic
     @BindingAdapter("imgUrl", "imgPlaceholder", "imgError")
     fun ImageView.setImage(url: String?, placeholder: Drawable, error: Drawable) {
-        GlideApp.with(this)
+        GlideApp.with(this.context.applicationContext)
             .`as`(PictureDrawable::class.java)
             .placeholder(placeholder)
             .error(error)

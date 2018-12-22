@@ -4,21 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.databinding.CountryListItemBinding
 import com.example.countries.model.Country
 
-class CountryListAdapter (
+class CountryPagedListAdapter (
     val viewModel: CountryListViewModel
-) : PagedListAdapter<Country, CountryListAdapter.ViewHolder>(diffCallback) {
+) : PagedListAdapter<Country, CountryListViewHolder>(diffCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = CountryListItemBinding.inflate(inflater, parent, false)
-        return ViewHolder(binding)
+        return CountryListViewHolder(binding, viewModel)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CountryListViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
@@ -30,26 +29,6 @@ class CountryListAdapter (
             override fun areContentsTheSame(oldItem: Country, newItem: Country): Boolean =
                     oldItem == newItem
         }
-    }
-
-    inner class ViewHolder(
-        private val binding: CountryListItemBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(country: Country?) {
-            binding.apply {
-                this.country = country
-                listener =  object : OnCountryClickListener {
-                    override fun onClick(country: Country) {
-                        viewModel.countryClickEvent.value =
-                                country.countryNameAndFlag.alphaCode
-                    }
-                }
-
-                executePendingBindings()
-            }
-        }
-
     }
 
 }

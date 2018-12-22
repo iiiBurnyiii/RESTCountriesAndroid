@@ -13,7 +13,9 @@ import com.example.countries.model.Country
 import com.example.countries.ui.country.CountryViewModel
 import com.example.countries.ui.countryList.CountryListViewModel
 import com.example.countries.util.LoadState
+import com.example.countries.util.SingleLiveEvent
 import com.example.countries.util.toDbFriendly
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
@@ -28,24 +30,8 @@ class CountryListRepository @Inject constructor(
     private val countryListDisposable = CompositeDisposable()
     private val countryDisposable = CompositeDisposable()
 
-    val loadState = MutableLiveData<LoadState>()
+    val loadState = SingleLiveEvent<LoadState>()
     val countryLiveData = MutableLiveData<Country>()
-
-    fun getCountryPagedList(listPageSize: Int): LiveData<PagedList<Country>> {
-        val boundaryCallback = CountryListBoundaryCallback(
-            loadData = this::loadCountries
-        )
-
-        return db.countryListDao().getAllCountries().toLiveData(
-            config = Config(
-                pageSize = listPageSize,
-                initialLoadSizeHint = listPageSize * 2,
-                enablePlaceholders = true
-            ),
-            boundaryCallback = boundaryCallback,
-            fetchExecutor = Executors.newSingleThreadExecutor()
-        )
-    }
 
     fun loadCountries(needRefresh: Boolean) {
         loadState.postValue(LoadState.LOADING)
@@ -57,19 +43,33 @@ class CountryListRepository @Inject constructor(
             }
             .subscribe(
                 { countryList ->
-                    loadState.postValue(LoadState.LOADED)
-
                     insertCountriesToDb(countryList, needRefresh)
+                    loadState.postValue(LoadState.LOADING.apply { msg = "Remote data loaded." })
                 },
                 { e ->
-                    loadState.postValue(LoadState.error("Please check your internet connection."))
-
+                    loadState.postValue(LoadState.ERROR.apply { msg = "Please check your internet connection." })
                     Log.d(LOG_TAG, "Unable to load remote data: $e")
                 }
             )
     }
 
-    fun loadCountry(alphaCode: String) {
+    fun getCountryPagedList(listPageSize: Int): LiveData<PagedList<Country>> {
+        val boundaryCallback = CountryListBoundaryCallback(
+            loadData = this::loadCountries
+        )
+
+        return db.countryListDao().getCountryDataFactory().toLiveData(
+            config = Config(
+                pageSize = listPageSize,
+                initialLoadSizeHint = listPageSize * 2,
+                enablePlaceholders = true
+            ),
+            boundaryCallback = boundaryCallback,
+            fetchExecutor = Executors.newSingleThreadExecutor()
+        )
+    }
+
+    fun getCountry(alphaCode: String) {
         countryDisposable += db.countryListDao().getCountry(alphaCode)
             .subscribeOn(Schedulers.io())
             .subscribe(
@@ -77,7 +77,7 @@ class CountryListRepository @Inject constructor(
                     countryLiveData.postValue(country)
                 },
                 { e ->
-                    loadState.postValue(LoadState.error("Unable to load data from database."))
+                    loadState.postValue(LoadState.ERROR.apply { msg = "Unable to load data from database." })
 
                     Log.d(LOG_TAG, "Unable to load country: $e")
                 }
@@ -110,9 +110,11 @@ class CountryListRepository @Inject constructor(
             db.countryListDao().insertCountryList(countryList, needRefresh)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                    { loadState.postValue(LoadState.LOADED) },
+                    {
+                        loadState.postValue(LoadState.LOADED.apply { msg = "Data inserted to database." })
+                    },
                     { e ->
-                        loadState.postValue(LoadState.error("Unable to insert data to database."))
+                        loadState.postValue(LoadState.ERROR.apply { msg = "Unable to insert data to database." })
 
                         Log.d(LOG_TAG, "Unable to insert data to database: $e")
                     }
