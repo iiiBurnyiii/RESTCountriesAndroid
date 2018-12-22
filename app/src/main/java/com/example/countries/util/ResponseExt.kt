@@ -3,7 +3,7 @@ package com.example.countries.util
 import com.example.countries.data.api.CountryResponse
 import com.example.countries.model.*
 
-fun CountryResponse.toDbFriendly(): Country {
+fun CountryResponse.toEntity(): Country {
     val countryNameAndFlag = CountryNameAndFlag(
         alphaCode = alpha3Code,
         name = name,

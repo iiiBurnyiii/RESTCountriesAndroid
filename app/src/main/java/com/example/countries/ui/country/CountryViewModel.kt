@@ -16,6 +16,8 @@ class CountryViewModel @Inject constructor(
     val timezones = map(countryLiveData) { it.timezones }!!
     val languages = map(countryLiveData) { it.languages }!!
 
+    val loadState = repository.countryLoadState
+
     fun start(alphaCode: String?) =
         alphaCode?.let {
             repository.getCountry(alphaCode)

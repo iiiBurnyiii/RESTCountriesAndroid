@@ -14,40 +14,42 @@ import com.example.countries.ui.country.CountryViewModel
 import com.example.countries.ui.countryList.CountryListViewModel
 import com.example.countries.util.LoadState
 import com.example.countries.util.SingleLiveEvent
-import com.example.countries.util.toDbFriendly
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.example.countries.util.toEntity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CountryListRepository @Inject constructor(
     val db: CountryListDatabase,
     val api: CountryListApi
 ) {
 
     private val countryListDisposable = CompositeDisposable()
-    private val countryDisposable = CompositeDisposable()
+    val listLoadState = SingleLiveEvent<LoadState>()
 
-    val loadState = SingleLiveEvent<LoadState>()
+    private val countryDisposable = CompositeDisposable()
     val countryLiveData = MutableLiveData<Country>()
+    val countryLoadState = SingleLiveEvent<LoadState>()
 
     fun loadCountries(needRefresh: Boolean) {
-        loadState.postValue(LoadState.LOADING)
+        listLoadState.postValue(LoadState.LOADING)
 
         countryListDisposable += api.getCountryList()
             .subscribeOn(Schedulers.io())
             .map { response ->
-                response.map { it.toDbFriendly() }
+                response.map { it.toEntity() }
             }
             .subscribe(
                 { countryList ->
                     insertCountriesToDb(countryList, needRefresh)
-                    loadState.postValue(LoadState.LOADING.apply { msg = "Remote data loaded." })
+                    listLoadState.postValue(LoadState.LOADING.apply { msg = "Remote data loaded." })
                 },
                 { e ->
-                    loadState.postValue(LoadState.ERROR.apply { msg = "Please check your internet connection." })
+                    listLoadState.postValue(LoadState.ERROR.apply { msg = "Please check your internet connection." })
                     Log.d(LOG_TAG, "Unable to load remote data: $e")
                 }
             )
@@ -77,7 +79,7 @@ class CountryListRepository @Inject constructor(
                     countryLiveData.postValue(country)
                 },
                 { e ->
-                    loadState.postValue(LoadState.ERROR.apply { msg = "Unable to load data from database." })
+                    countryLoadState.postValue(LoadState.ERROR.apply { msg = "Unable to load data from database." })
 
                     Log.d(LOG_TAG, "Unable to load country: $e")
                 }
@@ -105,16 +107,16 @@ class CountryListRepository @Inject constructor(
 
     private fun insertCountriesToDb(countryList: List<Country>?, needRefresh: Boolean) {
         countryList?.let {
-            loadState.postValue(LoadState.LOADING)
+            listLoadState.postValue(LoadState.LOADING)
 
             db.countryListDao().insertCountryList(countryList, needRefresh)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
-                        loadState.postValue(LoadState.LOADED.apply { msg = "Data inserted to database." })
+                        listLoadState.postValue(LoadState.LOADED.apply { msg = "Data inserted to database." })
                     },
                     { e ->
-                        loadState.postValue(LoadState.ERROR.apply { msg = "Unable to insert data to database." })
+                        listLoadState.postValue(LoadState.ERROR.apply { msg = "Unable to insert data to database." })
 
                         Log.d(LOG_TAG, "Unable to insert data to database: $e")
                     }

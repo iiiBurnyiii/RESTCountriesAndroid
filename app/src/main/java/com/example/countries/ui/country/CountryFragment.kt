@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.databinding.CountryFragmentBinding
+import com.example.countries.ui.MainActivity
 import com.example.countries.util.ViewModelFactory
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.country_fragment.*
@@ -42,6 +43,8 @@ class CountryFragment : DaggerFragment() {
 
         binding.viewModel?.apply {
             start(arguments?.getString(ARGUMENT_COUNTRY_CODE))
+
+            (activity as MainActivity).observeLoadMessages(this.loadState)
         }
     }
 
