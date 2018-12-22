@@ -19,7 +19,6 @@ object ImageBindings {
             .placeholder(placeholder)
             .error(error)
             .listener(SvgSoftwareLayerSetter())
-            .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.DATA)
             .load(url)
             .into(this)

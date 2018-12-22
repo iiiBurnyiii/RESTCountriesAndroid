@@ -22,7 +22,12 @@ data class Language(
     val nativeName: String,
     @ColumnInfo(name = "country_alpha_code")
     val alphaCode: String
-)
+) : ICommonItem {
+    override fun toCommonItem(): CommonItem =
+        CommonItem("iso639_2: $iso639",
+            "name: $name",
+            "nativeName: $nativeName")
+}
 
 
 @Entity
@@ -31,7 +36,10 @@ data class Timezone(
     val timezone: String,
     @ColumnInfo(name = "country_alpha_code")
     val alphaCode: String
-)
+) : ICommonItem {
+    override fun toCommonItem(): CommonItem =
+        CommonItem(timezone)
+}
 
 
 @Entity
@@ -42,4 +50,9 @@ data class Currency(
     val symbol: String,
     @ColumnInfo(name = "country_alpha_code")
     val alphaCode: String
-)
+) : ICommonItem {
+    override fun toCommonItem(): CommonItem =
+        CommonItem("code: $code",
+            "name: $name",
+            "symbol: $symbol")
+}

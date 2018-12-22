@@ -22,32 +22,42 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_margin="4dp"
+            android:onClick="@{() -> listener.onClick(country)}"
             app:cardElevation="2dp" >
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:onClick="@{() -> listener.onClick(country)}"
                 android:gravity="center_vertical">
 
             <ImageView
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:id="@+id/ivCountryFlag"
                     app:imgPlaceholder="@{@drawable/ic_image_24dp}"
                     app:imgError="@{@drawable/ic_broken_image_24dp}"
-                    app:imgUrl="@{country.countryNameAndFlag.flag}"/>
+                    app:imgUrl="@{country.countryNameAndFlag.flag}"
+                    app:layout_constraintDimensionRatio="2:1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                     android:id="@+id/tvCountyName"
                     android:text="@{country.countryNameAndFlag.name}"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content" app:layout_constraintStart_toEndOf="@+id/ivCountryFlag"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginLeft="16dp" android:layout_marginStart="16dp" android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"/>
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 

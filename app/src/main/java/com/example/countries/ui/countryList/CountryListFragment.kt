@@ -42,9 +42,7 @@ class CountryListFragment : DaggerFragment() {
             initAdapter(this)
 
             countryClickEvent.observe(this@CountryListFragment, Observer { alphaCode ->
-                Log.d("FragmentLogger", "Country onClick, alphaCode: $alphaCode")
-                val mActivity = activity as MainActivity
-                mActivity.openCountryFragment(alphaCode)
+                (activity as MainActivity).openCountryFragment(alphaCode)
             })
         }
     }

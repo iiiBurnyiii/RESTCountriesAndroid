@@ -10,21 +10,6 @@ import io.reactivex.Single
 abstract class CountryListDao {
 
     @Transaction
-    open fun insertCountryList(countryList: List<Country>, needRefresh: Boolean): Completable =
-        Completable.fromAction {
-            if (needRefresh) deleteAll()
-
-            countryList.forEach { country ->
-                with(country) {
-                    insert(countryNameAndFlag)
-                    currencies.forEach { insert(it) }
-                    timezones.forEach { insert(it) }
-                    languages.forEach { insert(it) }
-                }
-            }
-        }
-
-    @Transaction
     @Query("SELECT * FROM countries")
     abstract fun getAllCountries(): DataSource.Factory<Int, Country>
 
@@ -36,16 +21,16 @@ abstract class CountryListDao {
     @Query("SELECT * FROM countries WHERE alpha_code = :countryAlphaCode")
     abstract fun getCountry(countryAlphaCode: String): Single<Country>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(country: CountryNameAndFlag)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(currency: Currency)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun insertCurrencies(currencies: List<Currency>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(timezone: Timezone)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun insertTimezones(timezones: List<Timezone>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(language: Language)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun insertLanguages(languages: List<Language>)
 
 }

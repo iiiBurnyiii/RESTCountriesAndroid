@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.Config
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
+import androidx.room.Transaction
 import com.example.countries.data.api.CountryListApi
 import com.example.countries.data.db.CountryListDatabase
 import com.example.countries.model.Country
 import com.example.countries.util.LoadState
 import com.example.countries.util.toDbFriendly
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -52,8 +54,9 @@ class CountryListRepository @Inject constructor(
                 response.map { it.toDbFriendly() }
             }
             .subscribe(
-                { countryList ->
+                { response ->
                     loadState.postValue(LoadState.LOADED)
+                    Log.d(LOG_TAG, "countryList: $countryList")
 
                     insertCountriesToDb(countryList, needRefresh)
                 },
@@ -77,9 +80,10 @@ class CountryListRepository @Inject constructor(
     private fun insertCountriesToDb(countryList: List<Country>?, needRefresh: Boolean) {
         countryList?.let {
             loadState.postValue(LoadState.LOADING)
-
-            db.countryListDao().insertCountryList(countryList, needRefresh)
-                .subscribeOn(Schedulers.io())
+            compositeDisposable += Completable.fromAction {
+                if (needRefresh) db.countryListDao().deleteAll()
+                countryList.forEach { insertCountry(it) }
+            }.subscribeOn(Schedulers.io())
                 .subscribe(
                     { loadState.postValue(LoadState.LOADED) },
                     { e ->
@@ -90,6 +94,15 @@ class CountryListRepository @Inject constructor(
                 )
         }
     }
+
+    @Transaction
+    private fun insertCountry(country: Country) =
+        db.countryListDao().run {
+            insert(country.countryNameAndFlag)
+            insertCurrencies(country.currencies)
+            insertLanguages(country.languages)
+            insertTimezones(country.timezones)
+        }
 
     companion object {
         private const val LOG_TAG = "RepositoryLogger"
