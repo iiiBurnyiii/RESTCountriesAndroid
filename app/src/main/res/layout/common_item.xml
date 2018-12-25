@@ -9,7 +9,7 @@
 
         <variable
                 name="item"
-                type="com.example.countries.model.CommonItem" />
+                type="com.example.countries.model.CommonModel" />
 
     </data>
 

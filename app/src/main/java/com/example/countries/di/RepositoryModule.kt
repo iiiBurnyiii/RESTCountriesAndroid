@@ -1,6 +1,6 @@
 package com.example.countries.di
 
-import com.example.countries.data.CountryListRepository
+import com.example.countries.data.CountriesRepository
 import com.example.countries.data.IRepository
 import dagger.Binds
 import dagger.Module
@@ -11,6 +11,6 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindRepository(repository: CountryListRepository): IRepository
+    abstract fun bindRepository(repository: CountriesRepository): IRepository
 
 }

@@ -14,7 +14,7 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.country_list_fragment.*
 import javax.inject.Inject
 
-class CountryListFragment : DaggerFragment() {
+class CountriesFragment : DaggerFragment() {
 
     private lateinit var binding: CountryListFragmentBinding
 
@@ -25,8 +25,8 @@ class CountryListFragment : DaggerFragment() {
 
         binding = CountryListFragmentBinding.inflate(inflater,
             container, false).apply {
-            viewModel = ViewModelProviders.of(this@CountryListFragment, factory)[CountryListViewModel::class.java]
-            setLifecycleOwner(this@CountryListFragment)
+            viewModel = ViewModelProviders.of(this@CountriesFragment, factory)[CountriesViewModel::class.java]
+            setLifecycleOwner(this@CountriesFragment)
         }
 
         return binding.root
@@ -38,7 +38,7 @@ class CountryListFragment : DaggerFragment() {
         binding.viewModel?.apply {
             initAdapter(this)
 
-            countryClickEvent.observe(this@CountryListFragment, Observer { alphaCode ->
+            countryClickEvent.observe(this@CountriesFragment, Observer { alphaCode ->
                 (activity as MainActivity).openCountryFragment(alphaCode)
             })
 
@@ -46,15 +46,15 @@ class CountryListFragment : DaggerFragment() {
         }
     }
 
-    private fun initAdapter(viewModel: CountryListViewModel) {
+    private fun initAdapter(viewModel: CountriesViewModel) {
         with(rvCountryList) {
-            layoutManager = LinearLayoutManager(this@CountryListFragment.context)
+            layoutManager = LinearLayoutManager(this@CountriesFragment.context)
             adapter = CountryPagedListAdapter(viewModel)
         }
     }
 
     companion object {
-        fun newInstance() = CountryListFragment()
+        fun newInstance() = CountriesFragment()
     }
 
 }

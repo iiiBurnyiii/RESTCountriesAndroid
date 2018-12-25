@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CountryList</string>
+    <string name="languages">Languages</string>
+    <string name="currencies">Currencies</string>
+    <string name="timezones">Timezones</string>
+    <string name="list_item_image">Country flag in country list</string>
+    <string name="flag_image">Country flag</string>
 </resources>

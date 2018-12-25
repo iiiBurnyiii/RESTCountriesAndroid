@@ -8,19 +8,16 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
 
-interface CountryListApi {
+interface CountriesApi {
 
     @GET("all?fields=name;flag;currencies;languages;timezones;alpha3Code")
-    fun getCountryList(
-        @Query("fields") vararg fields: String
-    ): Single<List<CountryResponse>?>
+    fun loadCountriesWithFilter(): Single<List<CountryResponse>?>
 
     companion object {
         private const val BASE_URL = "https://restcountries.eu/rest/v2/"
 
-        fun create(): CountryListApi {
+        fun create(): CountriesApi {
             val logger =
                 HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
                     Log.d("ApiLogger", it)
@@ -38,7 +35,7 @@ interface CountryListApi {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(CountryListApi::class.java)
+                .create(CountriesApi::class.java)
         }
 
     }

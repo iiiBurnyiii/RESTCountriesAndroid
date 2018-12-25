@@ -5,7 +5,7 @@ import com.example.countries.di.country.CountryViewModelModule
 import com.example.countries.di.countryList.CountryListViewModelModule
 import com.example.countries.ui.MainActivity
 import com.example.countries.ui.country.CountryFragment
-import com.example.countries.ui.countryList.CountryListFragment
+import com.example.countries.ui.countryList.CountriesFragment
 import com.example.countries.util.ViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -17,14 +17,14 @@ abstract class ViewInjectorModule {
 
     @Binds
     @Singleton
-    abstract fun bindFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 
     @ContributesAndroidInjector
     abstract fun injectMainActivity(): MainActivity
 
     @CountryListScope
     @ContributesAndroidInjector(modules = [CountryListViewModelModule::class])
-    abstract fun injectCountryListFragment(): CountryListFragment
+    abstract fun injectCountryListFragment(): CountriesFragment
 
     @CountryScope
     @ContributesAndroidInjector(modules =  [CountryViewModelModule::class])
