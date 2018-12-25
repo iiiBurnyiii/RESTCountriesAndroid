@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.example.countries.R
 import com.example.countries.ui.country.CountryFragment
-import com.example.countries.ui.countryList.CountryListFragment
+import com.example.countries.ui.countryList.CountriesFragment
 import com.example.countries.util.LoadState
 import com.example.countries.util.SingleLiveEvent
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +24,7 @@ class MainActivity : DaggerAppCompatActivity() {
         if (savedInstanceState == null) {
             fragmentManager
                 .beginTransaction()
-                .add(R.id.container, CountryListFragment.newInstance())
+                .add(R.id.container, CountriesFragment.newInstance())
                 .commit()
         }
 
@@ -61,7 +61,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun onBackStackChange() {
         when(fragmentManager.findFragmentById(R.id.container)) {
-            is CountryListFragment, null -> false
+            is CountriesFragment, null -> false
             else -> true
         }.let { supportActionBar?.setDisplayHomeAsUpEnabled(it) }
     }
