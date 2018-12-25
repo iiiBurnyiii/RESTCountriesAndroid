@@ -10,8 +10,6 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidSupportInjectionModule::class,
     AppModule::class,
-    DataModule::class,
-    RepositoryModule::class,
     ViewInjectorModule::class
 ])
 interface AppComponent : AndroidInjector<CountryListApplication> {

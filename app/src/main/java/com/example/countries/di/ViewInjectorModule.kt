@@ -17,7 +17,7 @@ abstract class ViewInjectorModule {
 
     @Binds
     @Singleton
-    abstract fun bindFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 
     @ContributesAndroidInjector
     abstract fun injectMainActivity(): MainActivity
