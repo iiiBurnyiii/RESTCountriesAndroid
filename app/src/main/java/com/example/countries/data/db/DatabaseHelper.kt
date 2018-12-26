@@ -3,9 +3,8 @@ package com.example.countries.data.db
 import android.content.Context
 import androidx.paging.DataSource
 import androidx.room.Transaction
-import com.example.countries.data.db.entity.CountryTitle
-import com.example.countries.data.db.entity.JoinEntity
-import com.example.countries.model.CountryModel
+import com.example.countries.model.Country
+import com.example.countries.model.CountryDetails
 import io.reactivex.Single
 import io.reactivex.functions.Action
 import io.reactivex.rxkotlin.Singles
@@ -17,55 +16,53 @@ class DatabaseHelper(context: Context) {
     val db = CountriesDatabase.getInstance(context)
 
     @Transaction
-    fun insert(countries: List<CountryModel>?) = Action {
+    fun insert(countries: List<CountryDetails>?) = Action {
         countries?.forEach { country ->
-            val countryTitle =
-                CountryTitle(country.alphaCode, country.name, country.flag)
-
-            db.countryDao().insert(countryTitle)
+            db.countryDao().insert(
+                Country(country.alphaCode, country.name, country.flag))
             db.languageDao().insert(country.languages)
             db.currencyDao().insert(country.currencies)
             db.timezoneDao().insert(country.timezones)
 
-            actionWithJoin(country) { joinEntity ->
-                db.joinDao().insert(joinEntity)
-            }
+            insertJoin(country)
         }
     }.toCompletable()
 
     @Transaction
-    fun update(countries: List<CountryModel>?) = Action {
+    fun update(countries: List<CountryDetails>?) = Action {
         countries?.forEach { country ->
-            actionWithJoin(country) { joinEntity ->
-                db.joinDao().update(joinEntity)
-            }
+            db.countryDao().update(
+                Country(country.alphaCode, country.name, country.flag))
+            db.languageDao().update(country.languages)
+            db.currencyDao().update(country.currencies)
+            db.timezoneDao().update(country.timezones)
         }
     }.toCompletable()
 
     @Transaction
-    fun getCountry(alphaCode: String): Single<CountryModel> =
+    fun getCountry(alphaCode: String): Single<CountryDetails> =
         Singles.zip(
             db.countryDao().getCountryTitleByAlphaCode(alphaCode),
             db.languageDao().getLanguagesByAlphaCode(alphaCode),
             db.currencyDao().getCurrenciesByAlphaCode(alphaCode),
             db.timezoneDao().getTimezonesByAlphaCode(alphaCode))
         { country, languages, currencies, timezones->
-            CountryModel(country.alphaCode, country.name, country.flag,
+            CountryDetails(country.alphaCode, country.name, country.flag,
                 languages, currencies, timezones) }
 
-    fun getCountries(): DataSource.Factory<Int, CountryTitle> =
+    fun getCountries(): DataSource.Factory<Int, Country> =
             db.countryDao().getCountries()
 
-    private inline fun actionWithJoin(country: CountryModel, action: (JoinEntity) -> Unit) {
+    private fun insertJoin(country: CountryDetails) {
         val languages = country.languages
         val currencies = country.currencies
         val timezones = country.timezones
 
         val times = maxOf<Int>(languages.size,
-            currencies.size, timezones.size)
+            currencies.size, timezones.size) - 1
 
         for (i in 0..times) {
-            action(
+            db.joinDao().insert(
                 JoinEntity(
                     countryAlphaCode = country.alphaCode,
                     languageCode = languages.elementAtOrNull(i)?.code,

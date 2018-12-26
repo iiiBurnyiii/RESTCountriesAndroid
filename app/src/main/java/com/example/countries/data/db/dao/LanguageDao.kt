@@ -1,20 +1,17 @@
 package com.example.countries.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.example.countries.data.db.entity.Language
+import androidx.room.*
+import com.example.countries.model.Language
 import io.reactivex.Single
 
 @Dao
 interface LanguageDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(language: Language)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(languages: List<Language>)
+
+    @Update
+    fun update(languages: List<Language>)
 
     @Query("""
         SELECT code, name, native_name

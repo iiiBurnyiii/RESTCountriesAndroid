@@ -1,13 +1,13 @@
 package com.example.countries.util
 
 import com.example.countries.data.api.CountryResponse
-import com.example.countries.data.db.entity.Currency
-import com.example.countries.data.db.entity.Language
-import com.example.countries.data.db.entity.Timezone
-import com.example.countries.model.CountryModel
+import com.example.countries.model.CountryDetails
+import com.example.countries.model.Currency
+import com.example.countries.model.Language
+import com.example.countries.model.Timezone
 
-fun List<CountryResponse>.toCountryModelList(): List<CountryModel> {
-    val list: MutableList<CountryModel> = mutableListOf()
+fun List<CountryResponse>.toCountryDetailsList(): List<CountryDetails> {
+    val list: MutableList<CountryDetails> = mutableListOf()
 
     this.forEach { countryResponse ->
         val currencies: List<Currency> =countryResponse. currencies
@@ -27,7 +27,7 @@ fun List<CountryResponse>.toCountryModelList(): List<CountryModel> {
             Timezone(it)
         }
 
-        val model = CountryModel(
+        val model = CountryDetails(
             alphaCode = countryResponse.alpha3Code,
             name = countryResponse.name,
             flag = countryResponse.flagUrl,

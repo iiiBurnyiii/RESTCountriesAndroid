@@ -5,11 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.countries.data.db.dao.*
-import com.example.countries.data.db.entity.*
+import com.example.countries.model.Country
+import com.example.countries.model.Currency
+import com.example.countries.model.Language
+import com.example.countries.model.Timezone
 
 @Database(entities = [
     JoinEntity::class,
-    CountryTitle::class,
+    Country::class,
     Language::class,
     Currency::class,
     Timezone::class

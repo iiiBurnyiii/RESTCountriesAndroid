@@ -10,13 +10,13 @@ import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.example.countries.data.api.CountriesApi
 import com.example.countries.data.db.DatabaseHelper
-import com.example.countries.data.db.entity.CountryTitle
-import com.example.countries.model.CountryModel
+import com.example.countries.model.Country
+import com.example.countries.model.CountryDetails
 import com.example.countries.ui.country.CountryViewModel
 import com.example.countries.ui.countryList.CountriesViewModel
 import com.example.countries.util.LoadState
 import com.example.countries.util.SingleLiveEvent
-import com.example.countries.util.toCountryModelList
+import com.example.countries.util.toCountryDetailsList
 import com.google.gson.JsonSyntaxException
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -41,7 +41,7 @@ class CountriesRepository @Inject constructor(
 
         countryListDisposable += api.loadCountriesWithFilter()
             .subscribeOn(Schedulers.io())
-            .map { response -> response.toCountryModelList() }
+            .map { response -> response.toCountryDetailsList() }
             .subscribeBy(
                 onSuccess = { countries ->
                     listLoadState.postValue(LoadState.LOADING.apply { msg = "Remote data loaded." })
@@ -58,7 +58,7 @@ class CountriesRepository @Inject constructor(
             )
     }
 
-    override fun getCountries(listPageSize: Int): LiveData<PagedList<CountryTitle>> {
+    override fun getCountries(listPageSize: Int): LiveData<PagedList<Country>> {
         val boundaryCallback = CountryListBoundaryCallback(
             loadData = this::loadCountries
         )
@@ -74,8 +74,8 @@ class CountriesRepository @Inject constructor(
         )
     }
 
-    override fun getCountry(alphaCode: String): LiveData<CountryModel> {
-        val countryLiveData = MutableLiveData<CountryModel>()
+    override fun getCountry(alphaCode: String): LiveData<CountryDetails> {
+        val countryLiveData = MutableLiveData<CountryDetails>()
 
         countryDisposable += helper.getCountry(alphaCode)
             .subscribeOn(Schedulers.io())
@@ -112,7 +112,7 @@ class CountriesRepository @Inject constructor(
         }
     }
 
-    private fun setIntoDb(countries: List<CountryModel>?, needRefresh: Boolean) {
+    private fun setIntoDb(countries: List<CountryDetails>?, needRefresh: Boolean) {
         countries?.let {
             listLoadState.postValue(LoadState.LOADING)
 

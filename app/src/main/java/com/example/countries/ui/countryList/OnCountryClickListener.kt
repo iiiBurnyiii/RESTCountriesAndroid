@@ -1,9 +1,9 @@
 package com.example.countries.ui.countryList
 
-import com.example.countries.data.db.entity.CountryTitle
+import com.example.countries.model.Country
 
 interface OnCountryClickListener {
 
-    fun onClick(country: CountryTitle)
+    fun onClick(country: Country)
 
 }

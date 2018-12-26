@@ -1,20 +1,17 @@
 package com.example.countries.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.example.countries.data.db.entity.Currency
+import androidx.room.*
+import com.example.countries.model.Currency
 import io.reactivex.Single
 
 @Dao
 interface CurrencyDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertCurrency(currency: Currency)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(currencies: List<Currency>)
+
+    @Update
+    fun update(correncies: List<Currency>)
 
     @Query("""
         SELECT code, name, symbol

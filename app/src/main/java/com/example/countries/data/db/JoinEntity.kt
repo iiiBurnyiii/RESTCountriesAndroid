@@ -1,14 +1,14 @@
 package com.example.countries.data.db
 
 import androidx.room.*
-import com.example.countries.model.CountryDetails
+import com.example.countries.model.Country
 import com.example.countries.model.Currency
 import com.example.countries.model.Language
 import com.example.countries.model.Timezone
 
 @Entity(tableName = "join_entity",
     foreignKeys = [
-        ForeignKey(entity = CountryDetails::class,
+        ForeignKey(entity = Country::class,
             parentColumns = ["alpha_code"],
             childColumns = ["country_alpha_code"],
             deferred = true,

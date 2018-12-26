@@ -9,7 +9,7 @@
 
         <variable
                 name="country"
-                type="com.example.countries.data.db.entity.CountryTitle" />
+                type="com.example.countries.model.Country" />
 
         <variable
                 name="listener"
