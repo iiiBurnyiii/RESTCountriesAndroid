@@ -1,24 +1,24 @@
 package com.example.countries.data.db.dao
 
 import androidx.room.*
-import com.example.countries.model.Language
+import com.example.countries.data.db.entity.LanguageEntity
 import io.reactivex.Single
 
 @Dao
 interface LanguageDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(languages: List<Language>)
+    fun insert(languages: List<LanguageEntity>)
 
     @Update
-    fun update(languages: List<Language>)
+    fun update(languages: List<LanguageEntity>)
 
     @Query("""
-        SELECT code, name, native_name
+        SELECT iso639, name, native_name
         FROM languages JOIN join_entity
-        ON languages.code = join_entity.language_code
+        ON languages.iso639 = join_entity.language_code
         WHERE join_entity.country_alpha_code = :alphaCode
     """)
-    fun getLanguagesByAlphaCode(alphaCode: String): Single<List<Language>>
+    fun getLanguagesByAlphaCode(alphaCode: String): Single<List<LanguageEntity>>
 
 }

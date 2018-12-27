@@ -3,20 +3,20 @@ package com.example.countries.data
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
 import androidx.paging.Config
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.example.countries.data.api.CountriesApi
+import com.example.countries.data.api.CountryResponse
 import com.example.countries.data.db.DatabaseHelper
-import com.example.countries.model.Country
+import com.example.countries.domain.ResponseParser
 import com.example.countries.model.CountryDetails
+import com.example.countries.model.CountryTitle
 import com.example.countries.ui.country.CountryViewModel
 import com.example.countries.ui.countryList.CountriesViewModel
 import com.example.countries.util.LoadState
 import com.example.countries.util.SingleLiveEvent
-import com.example.countries.util.toCountryDetailsList
 import com.google.gson.JsonSyntaxException
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -32,25 +32,32 @@ class CountriesRepository @Inject constructor(
 
     private val countryListDisposable = CompositeDisposable()
     val listLoadState = SingleLiveEvent<LoadState>()
+    val needRefresh = MutableLiveData<Boolean>()
 
     private val countryDisposable = CompositeDisposable()
     val countryLoadState = SingleLiveEvent<LoadState>()
+    val countryDetailsLiveData = MutableLiveData<CountryDetails>()
 
-    override fun loadCountries(needRefresh: Boolean) {
+    override fun loadCountries() {
         listLoadState.postValue(LoadState.LOADING)
 
         countryListDisposable += api.loadCountriesWithFilter()
             .subscribeOn(Schedulers.io())
-            .map { response -> response.toCountryDetailsList() }
             .subscribeBy(
-                onSuccess = { countries ->
-                    listLoadState.postValue(LoadState.LOADING.apply { msg = "Remote data loaded." })
-                    setIntoDb(countries, needRefresh)
+                onSuccess = { response ->
+                    handleResponse(response)
+                    listLoadState.postValue(LoadState.LOADING.apply {
+                        msg = "Remote data loaded."
+                    })
                 },
                 onError = { e ->
                     val loadError = when (e) {
-                        is JsonSyntaxException -> LoadState.ERROR.apply { msg = "Unable to parse response." }
-                        else -> LoadState.ERROR.apply { msg = "Please check your internet connection." }
+                        is JsonSyntaxException -> LoadState.ERROR.apply {
+                            msg = "Unable to parse response."
+                        }
+                        else -> LoadState.ERROR.apply {
+                            msg = "Please check your internet connection."
+                        }
                     }
                     listLoadState.postValue(loadError)
                     Log.d(LOG_TAG, "Unable to load remote data: $e")
@@ -58,7 +65,7 @@ class CountriesRepository @Inject constructor(
             )
     }
 
-    override fun getCountries(listPageSize: Int): LiveData<PagedList<Country>> {
+    override fun getCountries(listPageSize: Int): LiveData<PagedList<CountryTitle>> {
         val boundaryCallback = CountryListBoundaryCallback(
             loadData = this::loadCountries
         )
@@ -74,23 +81,21 @@ class CountriesRepository @Inject constructor(
         )
     }
 
-    override fun getCountry(alphaCode: String): LiveData<CountryDetails> {
-        val countryLiveData = MutableLiveData<CountryDetails>()
-
-        countryDisposable += helper.getCountry(alphaCode)
+    override fun getCountry(alphaCode: String) {
+        countryDisposable += helper.getCountryDetails(alphaCode)
             .subscribeOn(Schedulers.io())
             .subscribeBy(
                 onSuccess = { country ->
-                    countryLiveData.postValue(country)
+                    countryDetailsLiveData.postValue(country)
                 },
                 onError = { e ->
-                    countryLoadState.postValue(LoadState.ERROR.apply { msg = "Unable to load data from database." })
+                    countryLoadState.postValue(LoadState.ERROR.apply {
+                        msg = "Unable to load body from database."
+                    })
 
                     Log.d(LOG_TAG, "Unable to load country: $e")
                 }
             )
-
-        return map(countryLiveData) { it }
     }
 
     override fun clear(viewModel: ViewModel) {
@@ -98,6 +103,22 @@ class CountriesRepository @Inject constructor(
             is CountriesViewModel -> disposeCountryList()
             is CountryViewModel -> disposeCountry()
         }
+    }
+
+    private fun handleResponse(response: List<CountryResponse>) {
+        countryListDisposable += ResponseParser(response).parse(
+            doSomeWithResult = { dtoList ->
+                countryListDisposable +=
+                        helper.handleData(dtoList, needRefresh.value ?: false,
+                            listLoadState)
+            },
+            doSomeWithError = { e ->
+                countryLoadState.postValue(LoadState.ERROR.apply {
+                    msg = "Handle response error."
+                })
+                Log.d(LOG_TAG, "Handle response error: $e")
+            }
+        )
     }
 
     private fun disposeCountryList() {
@@ -109,28 +130,6 @@ class CountriesRepository @Inject constructor(
     private fun disposeCountry() {
         if (!countryDisposable.isDisposed) {
             countryDisposable.dispose()
-        }
-    }
-
-    private fun setIntoDb(countries: List<CountryDetails>?, needRefresh: Boolean) {
-        countries?.let {
-            listLoadState.postValue(LoadState.LOADING)
-
-            if (needRefresh) {
-                helper.update(countries)
-            } else {
-                helper.insert(countries)
-            }.subscribeOn(Schedulers.io())
-                .subscribeBy(
-                    onComplete = {
-                        listLoadState.postValue(LoadState.LOADED.apply { msg = "Data inserted to database." })
-                    },
-                    onError = { e ->
-                        listLoadState.postValue(LoadState.ERROR.apply { msg = "Unable to insert data to database." })
-
-                        Log.d(LOG_TAG, "Unable to insert data to database: $e")
-                    }
-                )
         }
     }
 

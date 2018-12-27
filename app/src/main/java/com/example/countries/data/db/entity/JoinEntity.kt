@@ -1,32 +1,28 @@
-package com.example.countries.data.db
+package com.example.countries.data.db.entity
 
 import androidx.room.*
-import com.example.countries.model.Country
-import com.example.countries.model.Currency
-import com.example.countries.model.Language
-import com.example.countries.model.Timezone
 
 @Entity(tableName = "join_entity",
     foreignKeys = [
-        ForeignKey(entity = Country::class,
+        ForeignKey(entity = CountryEntity::class,
             parentColumns = ["alpha_code"],
             childColumns = ["country_alpha_code"],
             deferred = true,
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE),
-        ForeignKey(entity = Language::class,
-            parentColumns = ["code"],
+        ForeignKey(entity = LanguageEntity::class,
+            parentColumns = ["iso639"],
             childColumns = ["language_code"],
             deferred = true,
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE),
-        ForeignKey(entity = Currency::class,
+        ForeignKey(entity = CurrencyEntity::class,
             parentColumns = ["code"],
             childColumns = ["currency_code"],
             deferred = true,
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE),
-        ForeignKey(entity = Timezone::class,
+        ForeignKey(entity = TimezoneEntity::class,
             parentColumns = ["timezone"],
             childColumns = ["timezone_code"],
             deferred = true,

@@ -30,11 +30,11 @@
                     app:layout_constraintDimensionRatio="2:1"
                     app:imgPlaceholder="@{@drawable/ic_image_24dp}"
                     app:imgError="@{@drawable/ic_broken_image_24dp}"
-                    app:imgUrl="@{viewModel.countryLiveData.flag}"/>
+                    app:imgUrl="@{viewModel.countryDetails.flagUri}"/>
 
             <TextView
                     android:id="@+id/tvCountryName"
-                    android:text="@{viewModel.countryLiveData.alphaCodeWithName}"
+                    android:text="@{viewModel.countryDetails.alphaCodeWithName}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp" android:layout_marginTop="8dp"
-                    app:items="@{viewModel.countryLiveData.languages}"
+                    app:items="@{viewModel.countryDetails.languages}"
                     app:layout_constraintTop_toBottomOf="@+id/tvLanguages" android:id="@+id/rvLanguages" />
 
             <TextView
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/rvCurrencies"
                     android:layout_marginTop="8dp"
-                    app:items="@{viewModel.countryLiveData.currencies}"
+                    app:items="@{viewModel.countryDetails.currencies}"
                     app:layout_constraintTop_toBottomOf="@+id/tvCurrencies"
                     app:layout_constraintEnd_toStartOf="@+id/rvTimezones" android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp" app:layout_constraintStart_toEndOf="@+id/rvLanguages"
@@ -103,7 +103,7 @@
                     android:layout_height="191dp"
                     android:id="@+id/rvTimezones"
                     android:layout_marginTop="8dp"
-                    app:items="@{viewModel.countryLiveData.timezones}"
+                    app:items="@{viewModel.countryDetails.timezones}"
                     app:layout_constraintTop_toBottomOf="@+id/tvTimezones" app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="8dp" android:layout_marginRight="8dp"/>
 

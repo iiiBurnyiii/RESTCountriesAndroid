@@ -1,4 +1,4 @@
-package com.example.countries.util
+package com.example.countries.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

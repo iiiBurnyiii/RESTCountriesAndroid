@@ -10,10 +10,8 @@ class CommonAdapter : RecyclerView.Adapter<CommonAdapter.ViewHolder>() {
 
     private var items: List<CommonModel> = emptyList()
 
-    fun submitList(list: List<ICommonModel>) {
-        items = list.map {
-            it.toCommonModel()
-        }
+    fun submitList(list: List<CommonModel>) {
+        items = list
         notifyDataSetChanged()
     }
 

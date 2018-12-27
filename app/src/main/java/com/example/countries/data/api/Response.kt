@@ -12,15 +12,15 @@ data class CountryResponse(
     val languages: List<LanguageResponse>
 )
 
-data class CurrencyResponse(
-    val code: String?,
-    val name: String?,
-    val symbol: String?
-)
-
 data class LanguageResponse(
     @SerializedName("iso639_2")
     val iso639: String,
     val name: String,
     val nativeName: String
+)
+
+data class CurrencyResponse(
+    val code: String?,
+    val name: String?,
+    val symbol: String?
 )

@@ -1,8 +1,8 @@
-package com.example.countries.ui.country
+package com.example.countries.data.db.entity
 
 import com.example.countries.model.CommonModel
 
-interface ICommonModel {
+interface IEntity {
 
     fun toCommonModel(): CommonModel
 

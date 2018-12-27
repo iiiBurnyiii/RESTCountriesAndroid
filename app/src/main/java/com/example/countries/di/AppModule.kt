@@ -5,7 +5,7 @@ import com.example.countries.CountryListApplication
 import com.example.countries.data.CountriesRepository
 import com.example.countries.data.IRepository
 import com.example.countries.data.api.CountriesApi
-import com.example.countries.data.db.DatabaseHelper
+import com.example.countries.data.db.CountriesDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -25,8 +25,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideDbHelper(context: Context): DatabaseHelper =
-        DatabaseHelper(context)
+    fun provideDb(context: Context): CountriesDatabase =
+        CountriesDatabase.getInstance(context)
 
     @Provides
     @Singleton

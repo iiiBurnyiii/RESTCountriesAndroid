@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Update
-import com.example.countries.data.db.JoinEntity
+import com.example.countries.data.db.entity.JoinEntity
 
 @Dao
 interface JoinDao {

@@ -1,17 +1,17 @@
 package com.example.countries.data.db.dao
 
 import androidx.room.*
-import com.example.countries.model.Currency
+import com.example.countries.data.db.entity.CurrencyEntity
 import io.reactivex.Single
 
 @Dao
 interface CurrencyDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(currencies: List<Currency>)
+    fun insert(currencies: List<CurrencyEntity>)
 
     @Update
-    fun update(correncies: List<Currency>)
+    fun update(currencies: List<CurrencyEntity>)
 
     @Query("""
         SELECT code, name, symbol
@@ -19,5 +19,5 @@ interface CurrencyDao {
         ON currencies.code = join_entity.currency_code
         WHERE join_entity.country_alpha_code = :alphaCode
     """)
-    fun getCurrenciesByAlphaCode(alphaCode: String): Single<List<Currency>>
+    fun getCurrenciesByAlphaCode(alphaCode: String): Single<List<CurrencyEntity>>
 }

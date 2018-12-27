@@ -19,7 +19,8 @@ class CountriesViewModel @Inject constructor(
     val countryClickEvent = SingleLiveEvent<String>()
 
     fun refresh() {
-        repository.loadCountries(true)
+        repository.needRefresh.value = true
+        repository.loadCountries()
     }
 
     override fun onCleared() {

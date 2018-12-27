@@ -9,7 +9,7 @@
 
         <variable
                 name="country"
-                type="com.example.countries.model.Country" />
+                type="com.example.countries.model.CountryTitle" />
 
         <variable
                 name="listener"
@@ -38,7 +38,7 @@
                     android:contentDescription="@string/list_item_image"
                     app:imgPlaceholder="@{@drawable/ic_image_24dp}"
                     app:imgError="@{@drawable/ic_broken_image_24dp}"
-                    app:imgUrl="@{country.flag}"
+                    app:imgUrl="@{country.flagUri}"
                     app:layout_constraintDimensionRatio="2:1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>

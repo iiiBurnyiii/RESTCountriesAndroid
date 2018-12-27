@@ -5,7 +5,7 @@ import android.graphics.drawable.PictureDrawable
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.countries.util.svgSupport.GlideApp
+import com.example.countries.util.GlideApp
 import com.example.countries.util.svgSupport.SvgSoftwareLayerSetter
 
 

@@ -1,14 +1,16 @@
-package com.example.countries.model
+package com.example.countries.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.countries.ui.country.ICommonModel
+import com.example.countries.model.CommonModel
 
 @Entity(tableName = "timezones")
-data class Timezone(
+data class TimezoneEntity(
     @PrimaryKey
     val timezone: String
-) : ICommonModel {
+) : IEntity {
+
     override fun toCommonModel(): CommonModel =
         CommonModel(timezone)
+
 }

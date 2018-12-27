@@ -12,7 +12,7 @@ import retrofit2.http.GET
 interface CountriesApi {
 
     @GET("all?fields=name;flag;currencies;languages;timezones;alpha3Code")
-    fun loadCountriesWithFilter(): Single<List<CountryResponse>?>
+    fun loadCountriesWithFilter(): Single<List<CountryResponse>>
 
     companion object {
         private const val BASE_URL = "https://restcountries.eu/rest/v2/"

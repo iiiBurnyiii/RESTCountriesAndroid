@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.countries.databinding.CountryListFragmentBinding
 import com.example.countries.ui.MainActivity
-import com.example.countries.util.ViewModelFactory
+import com.example.countries.ui.ViewModelFactory
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.country_list_fragment.*
 import javax.inject.Inject

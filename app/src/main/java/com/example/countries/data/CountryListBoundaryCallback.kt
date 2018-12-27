@@ -1,14 +1,14 @@
 package com.example.countries.data
 
 import androidx.paging.PagedList
-import com.example.countries.model.Country
+import com.example.countries.model.CountryTitle
 
 class CountryListBoundaryCallback(
-    private val loadData: (Boolean) -> Unit
-) : PagedList.BoundaryCallback<Country>() {
+    private val loadData: () -> Unit
+) : PagedList.BoundaryCallback<CountryTitle>() {
 
     override fun onZeroItemsLoaded() {
-        loadData.invoke(false)
+        loadData.invoke()
     }
 
 }

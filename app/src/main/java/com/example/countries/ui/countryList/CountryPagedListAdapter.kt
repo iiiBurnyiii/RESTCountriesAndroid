@@ -6,11 +6,11 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.databinding.CountryListItemBinding
-import com.example.countries.model.Country
+import com.example.countries.model.CountryTitle
 
 class CountryPagedListAdapter (
     val viewModel: CountriesViewModel
-) : PagedListAdapter<Country, CountryPagedListAdapter.ViewHolder>(diffCallback) {
+) : PagedListAdapter<CountryTitle, CountryPagedListAdapter.ViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,11 +23,11 @@ class CountryPagedListAdapter (
     }
 
     companion object {
-        val diffCallback = object : DiffUtil.ItemCallback<Country>() {
-            override fun areItemsTheSame(oldItem: Country, newItem: Country): Boolean =
-                oldItem.alphaCode == newItem.alphaCode
+        val diffCallback = object : DiffUtil.ItemCallback<CountryTitle>() {
+            override fun areItemsTheSame(oldItem: CountryTitle, newItem: CountryTitle): Boolean =
+                oldItem.name == newItem.name
 
-            override fun areContentsTheSame(oldItem: Country, newItem: Country): Boolean =
+            override fun areContentsTheSame(oldItem: CountryTitle, newItem: CountryTitle): Boolean =
                     oldItem == newItem
         }
     }
@@ -37,11 +37,11 @@ class CountryPagedListAdapter (
         private val viewModel: CountriesViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(country: Country?) {
+        fun bind(country: CountryTitle?) {
             binding.apply {
                 this.country = country
                 listener =  object : OnCountryClickListener {
-                    override fun onClick(country: Country) {
+                    override fun onClick(country: CountryTitle) {
                         viewModel.countryClickEvent.value =
                                 country.alphaCode
                     }

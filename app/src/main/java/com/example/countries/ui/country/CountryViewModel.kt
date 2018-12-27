@@ -1,22 +1,22 @@
 package com.example.countries.ui.country
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
 import com.example.countries.data.CountriesRepository
-import com.example.countries.model.CountryDetails
 import javax.inject.Inject
 
 class CountryViewModel @Inject constructor(
     val repository: CountriesRepository
 ) : ViewModel() {
 
-    var countryLiveData: LiveData<CountryDetails>? = null
+    var countryDetails =
+        map(repository.countryDetailsLiveData) { it }
 
     val loadState = repository.countryLoadState
 
     fun start(alphaCode: String?) =
         alphaCode?.let {
-             countryLiveData = repository.getCountry(alphaCode)
+             repository.getCountry(alphaCode)
         }
 
     override fun onCleared() {

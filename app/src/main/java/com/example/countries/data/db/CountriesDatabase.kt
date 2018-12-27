@@ -5,17 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.countries.data.db.dao.*
-import com.example.countries.model.Country
-import com.example.countries.model.Currency
-import com.example.countries.model.Language
-import com.example.countries.model.Timezone
+import com.example.countries.data.db.entity.*
 
 @Database(entities = [
     JoinEntity::class,
-    Country::class,
-    Language::class,
-    Currency::class,
-    Timezone::class
+    CountryEntity::class,
+    LanguageEntity::class,
+    CurrencyEntity::class,
+    TimezoneEntity::class
 ], version = 1, exportSchema = false)
 abstract class CountriesDatabase : RoomDatabase() {
 
