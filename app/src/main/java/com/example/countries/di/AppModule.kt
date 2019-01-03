@@ -2,10 +2,10 @@ package com.example.countries.di
 
 import android.content.Context
 import com.example.countries.CountryListApplication
-import com.example.countries.data.CountriesRepository
-import com.example.countries.data.IRepository
 import com.example.countries.data.api.CountriesApi
 import com.example.countries.data.db.CountriesDatabase
+import com.example.countries.domain.CountriesRepository
+import com.example.countries.domain.IRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

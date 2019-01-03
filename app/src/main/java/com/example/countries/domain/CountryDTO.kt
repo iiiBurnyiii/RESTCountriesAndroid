@@ -8,13 +8,15 @@ import com.example.countries.data.db.entity.TimezoneEntity
 data class CountryDTO(
     val alphaCode: String,
     val name: String,
-    val flagUri: String,
+    val flagName: String,
     val languages: List<LanguageDTO>,
     val currencies: List<CurrencyDTO>,
     val timezones: List<TimezoneDTO>
 ) {
+
     fun toEntity(): CountryEntity =
-            CountryEntity(alphaCode, name, flagUri)
+            CountryEntity(alphaCode, name, flagName)
+
 }
 
 data class LanguageDTO(

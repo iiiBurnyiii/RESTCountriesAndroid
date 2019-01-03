@@ -10,5 +10,5 @@ data class CountryEntity(
     @ColumnInfo(name = "alpha_code")
     val alphaCode: String,
     val name: String,
-    val flagUri: String
+    val flagName: String
 )

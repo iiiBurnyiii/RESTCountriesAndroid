@@ -12,16 +12,17 @@ import com.example.countries.util.svgSupport.SvgSoftwareLayerSetter
 object ImageBindings {
 
     @JvmStatic
-    @BindingAdapter("imgUrl", "imgPlaceholder", "imgError")
-    fun ImageView.setImage(url: String?, placeholder: Drawable, error: Drawable) {
-        GlideApp.with(this.context.applicationContext)
-            .`as`(PictureDrawable::class.java)
-            .placeholder(placeholder)
-            .error(error)
-            .listener(SvgSoftwareLayerSetter())
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            .load(url)
-            .into(this)
+    @BindingAdapter("imgFlagName", "imgPlaceholder", "imgError")
+    fun ImageView.setImage(flagName: String?, placeholder: Drawable, error: Drawable) {
+        if (flagName != null && flagName in context.fileList()) {
+            GlideApp.with(this)
+                .`as`(PictureDrawable::class.java)
+                .load(context.openFileInput(flagName).readBytes())
+                .placeholder(placeholder)
+                .error(error)
+                .listener(SvgSoftwareLayerSetter())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(this)
+        }
     }
-
 }

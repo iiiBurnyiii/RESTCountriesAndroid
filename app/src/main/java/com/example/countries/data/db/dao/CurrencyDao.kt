@@ -1,6 +1,9 @@
 package com.example.countries.data.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.countries.data.db.entity.CurrencyEntity
 import io.reactivex.Single
 
@@ -10,9 +13,6 @@ interface CurrencyDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(currencies: List<CurrencyEntity>)
 
-    @Update
-    fun update(currencies: List<CurrencyEntity>)
-
     @Query("""
         SELECT code, name, symbol
         FROM currencies JOIN join_entity
@@ -20,4 +20,7 @@ interface CurrencyDao {
         WHERE join_entity.country_alpha_code = :alphaCode
     """)
     fun getCurrenciesByAlphaCode(alphaCode: String): Single<List<CurrencyEntity>>
+
+    @Query("DELETE FROM currencies")
+    fun delete()
 }

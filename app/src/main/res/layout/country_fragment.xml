@@ -30,7 +30,7 @@
                     app:layout_constraintDimensionRatio="2:1"
                     app:imgPlaceholder="@{@drawable/ic_image_24dp}"
                     app:imgError="@{@drawable/ic_broken_image_24dp}"
-                    app:imgUrl="@{viewModel.countryDetails.flagUri}"/>
+                    app:imgFlagName="@{viewModel.countryDetails.flagName}"/>
 
             <TextView
                     android:id="@+id/tvCountryName"

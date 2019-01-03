@@ -1,62 +1,85 @@
 package com.example.countries.domain
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import io.reactivex.Single
+import com.bumptech.glide.request.FutureTarget
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Action
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toCompletable
+import io.reactivex.schedulers.Schedulers
 import java.io.File
-import javax.inject.Inject
 
-class ImageLoader @Inject constructor(
-    val context: Context
+class ImageLoader(
+    private val urlList: List<String>,
+    private val context: Context
 ) {
 
-    private fun loadImageAndReturnFileName(url: String): Single<String> =
-        Single.create { emitter ->
-            val futureTarget =
-                Glide.with(context).load(url)
-                    .listener(listener)
-                    .downloadOnly(1000, 800)
-            val name = url.getFileName()
+    fun start(
+        doSomeOnNext: (Int) -> Unit,
+        doSomeOnComplete: () -> Unit,
+        doSomeOnError: (Throwable) -> Unit): Disposable =
+        loadImageAndEmitItemPosition()
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onNext = { doSomeOnNext(it) },
+                onComplete = { doSomeOnComplete() },
+                onError = { doSomeOnError(it) }
+            )
 
-            createFile(futureTarget.get(), name)
+    fun clear(
+        doSomeOnComplete: () -> Unit,
+        doSomeOnError: (Throwable) -> Unit): Disposable =
+        removeFlagFiles()
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onComplete = { doSomeOnComplete() },
+                onError = { doSomeOnError(it) }
+            )
 
-            emitter.onSuccess(name)
+    private fun loadImageAndEmitItemPosition() =
+        Observable.create<Int> { emitter ->
+            var itemPosition = 0
+            urlList.forEach { url ->
+                val futureTarget: FutureTarget<File> =
+                    Glide.with(context)
+                        .asFile()
+                        .load(url)
+                        .submit()
+                val name = url.substring(url.lastIndexOf("/") + 1)
+
+                createFile(futureTarget.get(), name)
+
+                emitter.onNext(itemPosition++)
+
+                if (itemPosition == urlList.size - 1) {
+                    emitter.onComplete()
+                }
+            }
         }
+
+    private fun removeFlagFiles() = Action {
+        urlList.forEach { flagName ->
+            deleteFile(flagName)
+        }
+    }.toCompletable()
+
+    private fun deleteFile(name: String) {
+        val fileList = context.fileList()
+        if (name in fileList) {
+            context.deleteFile(name)
+        }
+    }
 
     private fun createFile(file: File, name: String) =
         context.openFileOutput(name, Context.MODE_PRIVATE).use { stream ->
             stream.write(file.readBytes())
         }
 
-    private fun String.getFileName(): String =
-            substring(lastIndexOf("/" + 1))
-
-    private val listener = object : RequestListener<Drawable> {
-        override fun onLoadFailed(
-            e: GlideException?,
-            model: Any?,
-            target: Target<Drawable>?,
-            isFirstResource: Boolean
-        ): Boolean {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun onResourceReady(
-            resource: Drawable?,
-            model: Any?,
-            target: Target<Drawable>?,
-            dataSource: DataSource?,
-            isFirstResource: Boolean
-        ): Boolean {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
 
 
-    }
+
+
 
 }

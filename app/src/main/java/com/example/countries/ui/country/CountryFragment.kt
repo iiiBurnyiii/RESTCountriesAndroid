@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.databinding.CountryFragmentBinding
-import com.example.countries.ui.MainActivity
 import com.example.countries.ui.ViewModelFactory
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.country_fragment.*
@@ -35,16 +34,9 @@ class CountryFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        initAdapters(
-            rvLanguages,
-            rvCurrencies,
-            rvTimezones
-        )
-
         binding.viewModel?.apply {
+            initAdapters(rvLanguages, rvCurrencies, rvTimezones)
             start(arguments?.getString(ARGUMENT_COUNTRY_CODE))
-
-            (activity as MainActivity).observeLoadMessages(this.loadState)
         }
     }
 
@@ -56,7 +48,6 @@ class CountryFragment : DaggerFragment() {
             }
         }
     }
-
 
     companion object {
         const val ARGUMENT_COUNTRY_CODE = "COUNTRY_CODE"
